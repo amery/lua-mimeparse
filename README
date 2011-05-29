@@ -1,0 +1,5 @@
+MIME-Type Parser for Lua
+
+This module mimics http://code.google.com/p/mimeparse/ proving
+basic functions for parsing mime-type names and matching them
+against a list of media-ranges.
