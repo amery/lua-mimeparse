@@ -63,11 +63,33 @@ local media_types = media_type * (spacing * P"," * spacing * media_type)^0
 -- Parses a mime-type into its component parts.
 local _parse_mime_type = Ct(media_type) * P(-1)
 function parse_mime_type(mime_type)
+--[[
+	Carves up a mime-type and returns a tuple of the
+	(type, subtype, params) where 'params' is a dictionary
+	of all the parameters for the media range.
+	For example, the media range 'application/xhtml;q=0.5' would
+	get parsed into:
+
+	{'application', 'xhtml', {'q' = '0.5'}}
+	]]--
 	return _parse_mime_type:match(mime_type)
 end
 
 -- Media-ranges are mime-types with wild-cards and a 'q' quality parameter.
 function parse_media_range(media_range)
+--[[
+	Carves up a media range and returns a tuple of the
+	(type, subtype, params) where 'params' is a dictionary
+	of all the parameters for the media range.
+	For example, the media range 'application/*;q=0.5' would
+	get parsed into:
+
+	{'application', '*', {'q' = '0.5'}}
+
+	In addition this function also guarantees that there
+	is a value for 'q' in the params dictionary, filling it
+	in with a proper default if necessary.
+	]]--
 	local r = parse_mime_type(media_range)
 	local q = tonumber(r[3]["q"]) or 1
 	if q < 0 or q > 1 then
