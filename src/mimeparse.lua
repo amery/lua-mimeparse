@@ -99,21 +99,20 @@ function parse_media_range(media_range)
 	return r
 end
 
--- Determines the quality ('q') of a mime-type when compared against a list
--- of media-ranges.
-function quality()
+-- Just like quality_parsed() but also returns the fitness score.
+function fitness_and_quality_parsed()
 end
 
 -- Just like quality() except the second parameter must be pre-parsed.
 function quality_parsed()
 end
 
--- Just like quality_parsed() but also returns the fitness score.
-function fitness_and_quality_parsed()
+-- Determines the quality ('q') of a mime-type when compared against a list
+-- of media-ranges.
+function quality()
 end
 
 -- Choose the mime-type with the highest fitness score and quality ('q')
 -- from a list of candidates.
 function best_match()
 end
-
