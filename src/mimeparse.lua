@@ -55,7 +55,11 @@ local function foldparams(a,b)
 end
 
 local parameters = Cc() * (P";" * (parameter/tokeyval))^0
-local media_type = C(token) * P"/" * C(token) * Cf(parameters,foldparams)
+local media_type =
+	Cg(C(token), "type") *
+	P"/" *
+	Cg(C(token), "subtype") *
+	Cg(Cf(parameters,foldparams), "params")
 local media_types = media_type * (spacing * P"," * spacing * media_type)^0
 
 -- Parses a mime-type into its component parts.
