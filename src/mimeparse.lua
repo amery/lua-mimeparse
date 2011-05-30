@@ -5,7 +5,7 @@ require "lpeg"
 local P, S, R = lpeg.P, lpeg.S, lpeg.R
 local C, Cg, Ct = lpeg.C, lpeg.Cg, lpeg.Ct
 
-local ipairs = ipairs
+local ipairs, tonumber = ipairs, tonumber
 
 module (...)
 
@@ -72,7 +72,13 @@ end
 
 -- Media-ranges are mime-types with wild-cards and a 'q' quality parameter.
 function parse_media_range(media_range)
-	return parse_mime_type(media_range)
+	local r = parse_mime_type(media_range)
+	local q = tonumber(r.params["q"]) or 1
+	if q < 0 or q > 1 then
+		q = 1
+	end
+	r.params["q"] = q
+	return r
 end
 
 -- Determines the quality ('q') of a mime-type when compared against a list
