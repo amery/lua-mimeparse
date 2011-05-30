@@ -100,19 +100,56 @@ function parse_media_range(media_range)
 end
 
 -- Just like quality_parsed() but also returns the fitness score.
-function fitness_and_quality_parsed()
+function fitness_and_quality_parsed(mime_type, parsed_ranges)
+--[[
+	Find the best match for a given mime-type against
+	a list of media_ranges that have already been
+	parsed by parse_media_range(). Returns a tuple of
+	the fitness value and the value of the 'q' quality
+	parameter of the best match, or {-1, 0} if no match
+	was found. Just as for quality_parsed(), 'parsed_ranges'
+	must be a list of parsed media ranges.
+	]]--
 end
 
 -- Just like quality() except the second parameter must be pre-parsed.
-function quality_parsed()
+function quality_parsed(mime_type, parsed_ranges)
+--[[
+	Find the best match for a given mime-type against
+	a list of media_ranges that have already been
+	parsed by parse_media_range(). Returns the
+	'q' quality parameter of the best match, 0 if no
+	match was found. This function bahaves the same as quality()
+	except that 'parsed_ranges' must be a list of
+	parsed media ranges.
+	]]--
 end
 
 -- Determines the quality ('q') of a mime-type when compared against a list
 -- of media-ranges.
-function quality()
+function quality(mime_type, ranges)
+--[[
+	Returns the quality 'q' of a mime-type when compared
+	against the media-ranges in ranges. For example:
+
+	>>> quality('text/html','text/*;q=0.3, text/html;q=0.7, text/html;level=1, text/html;level=2;q=0.4, */*;q=0.5')
+	0.7
+	]]--
 end
 
 -- Choose the mime-type with the highest fitness score and quality ('q')
 -- from a list of candidates.
-function best_match()
+function best_match(supported, header)
+--[[
+	Takes a list of supported mime-types and finds the best
+	match for all the media-ranges listed in header. The value of
+	header must be a string that conforms to the format of the
+	HTTP Accept: header. The value of 'supported' is a list of
+	mime-types. The list of supported mime-types should be sorted
+	in order of increasing desirability, in case of a situation
+	where there is a tie
+
+	>>> best_match({'application/xbel+xml', 'text/xml'}, 'text/*;q=0.5,*/*; q=0.1')
+	'text/xml'
+	]]--
 end
