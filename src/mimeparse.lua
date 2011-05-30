@@ -38,9 +38,13 @@ local quoted_string = quote * C((qdtext + quoted_pair)^0) * quote
 
 local attribute = C(token)
 local value = C(token) + quoted_string
-local parameter = Cg(attribute, 'name') * P"=" * Cg(value, 'value')
+local parameter = attribute * P"=" * value
 
-local parameters = (P";" * Ct(parameter))^0
+local function tokeyval(k,v)
+	return { [k] = v }
+end
+
+local parameters = (P";" * (parameter/tokeyval))^0
 local media_type = C(token) * P"/" * C(token) * parameters
 local media_types = media_type * (spacing * P"," * spacing * media_type)^0
 
