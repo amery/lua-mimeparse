@@ -57,11 +57,7 @@ local function foldparams(...)
 end
 
 local parameters = (P";" * parameter)^0
-local media_type =
-	Cg(C(token), "type") *
-	P"/" *
-	Cg(C(token), "subtype") *
-	Cg(parameters/foldparams, "params")
+local media_type = C(token) * P"/" * C(token) * (parameters/foldparams)
 local media_types = media_type * (spacing * P"," * spacing * media_type)^0
 
 -- Parses a mime-type into its component parts.
@@ -73,11 +69,11 @@ end
 -- Media-ranges are mime-types with wild-cards and a 'q' quality parameter.
 function parse_media_range(media_range)
 	local r = parse_mime_type(media_range)
-	local q = tonumber(r.params["q"]) or 1
+	local q = tonumber(r[3]["q"]) or 1
 	if q < 0 or q > 1 then
 		q = 1
 	end
-	r.params["q"] = q
+	r[3]["q"] = q
 	return r
 end
 
