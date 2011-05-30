@@ -3,9 +3,9 @@
 require "lpeg"
 
 local P, S, R = lpeg.P, lpeg.S, lpeg.R
-local C, Cc, Cg, Cf, Ct = lpeg.C, lpeg.Cc, lpeg.Cg, lpeg.Cf, lpeg.Ct
+local C, Cg, Ct = lpeg.C, lpeg.Cg, lpeg.Ct
 
-local pairs = pairs
+local ipairs = ipairs
 
 module (...)
 
@@ -42,24 +42,26 @@ local attribute = C(token)
 local value = C(token) + quoted_string
 local parameter = attribute * P"=" * value
 
-local function tokeyval(k,v)
-	return { [k] = v }
-end
-
-local function foldparams(a,b)
-	for k,v in pairs(b) do
-		a[k] = v
+local function foldparams(...)
+	local params = {}
+	local key
+	for _, v in ipairs{...} do
+		if key then
+			params[key] = v
+			key = nil
+		else
+			key = v
+		end
 	end
-
-	return a
+	return params
 end
 
-local parameters = Cc() * (P";" * (parameter/tokeyval))^0
+local parameters = (P";" * parameter)^0
 local media_type =
 	Cg(C(token), "type") *
 	P"/" *
 	Cg(C(token), "subtype") *
-	Cg(Cf(parameters,foldparams), "params")
+	Cg(parameters/foldparams, "params")
 local media_types = media_type * (spacing * P"," * spacing * media_type)^0
 
 -- Parses a mime-type into its component parts.
