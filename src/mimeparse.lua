@@ -128,6 +128,10 @@ function fitness_and_quality_parsed(mime_type, parsed_ranges)
 	was found. Just as for quality_parsed(), 'parsed_ranges'
 	must be a list of parsed media ranges.
 	]]--
+	local best_fitness = -1
+	local best_fit_q = 0
+
+	return best_fitness, best_fit_q
 end
 
 -- Just like quality() except the second parameter must be pre-parsed.
