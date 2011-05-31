@@ -5,7 +5,7 @@ require "lpeg"
 local P, S, R = lpeg.P, lpeg.S, lpeg.R
 local C, Cg, Ct = lpeg.C, lpeg.Cg, lpeg.Ct
 
-local ipairs, tonumber = ipairs, tonumber
+local ipairs, pairs, tonumber = ipairs, pairs, tonumber
 
 module (...)
 
@@ -140,10 +140,11 @@ function fitness_and_quality_parsed(mime_type, parsed_ranges)
 				local fitness = (r[1] == t[1]) and 100 or 0
 				fitness = fitness + ((r[2] == t[2]) and 10 or 0)
 
---         param_matches = reduce(lambda x, y: x+y, [1 for (key, value) in \
---                 target_params.iteritems() if key != 'q' and \
---                 params.has_key(key) and value == params[key]], 0)
---         fitness += param_matches
+				for k,v in pairs(t[3]) do
+					if k ~= 'q' and r[3][k] == t[3][k] then
+						fitness = fitness + 1
+					end
+				end
 				if fitness > best_fitness then
 					best_fitness = fitness
 					best_fit_q = r[3]["q"]
@@ -151,6 +152,7 @@ function fitness_and_quality_parsed(mime_type, parsed_ranges)
 			end
 		end
 	end
+
 	return best_fitness, best_fit_q
 end
 
