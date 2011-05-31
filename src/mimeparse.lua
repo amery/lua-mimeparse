@@ -57,11 +57,11 @@ local function foldparams(...)
 end
 
 local parameters = (P";" * parameter)^0
-local media_type = C(token) * P"/" * C(token) * (parameters/foldparams)
-local media_types = media_type * (spacing * P"," * spacing * media_type)^0
+local media_type = Ct(C(token) * P"/" * C(token) * (parameters/foldparams))
+local media_ranges = media_type * (spacing * P"," * spacing * media_type)^0
 
 -- Parses a mime-type into its component parts.
-local _parse_mime_type = Ct(media_type) * P(-1)
+local _parse_mime_type = media_type * P(-1)
 function parse_mime_type(mime_type)
 --[[
 	Carves up a mime-type and returns a tuple of the
@@ -97,6 +97,24 @@ function parse_media_range(media_range)
 	end
 	r[3]["q"] = q
 	return r
+end
+
+-- same as parse_media_range for a comma delimited list
+local _parse_media_ranges = Ct(media_ranges) * P(-1)
+function parse_media_ranges(ranges)
+--[[
+	]]--
+	local t = _parse_media_ranges:match(ranges)
+	if t then
+		for _, r in ipairs(t) do
+			local q = tonumber(r[3]["q"]) or 1
+			if q < 0 or q > 1 then
+				q = 1
+			end
+			r[3]["q"] = q
+		end
+	end
+	return t
 end
 
 -- Just like quality_parsed() but also returns the fitness score.
