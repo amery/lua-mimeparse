@@ -6,6 +6,7 @@ local P, S, R = lpeg.P, lpeg.S, lpeg.R
 local C, Cg, Ct = lpeg.C, lpeg.Cg, lpeg.Ct
 
 local ipairs, pairs, tonumber = ipairs, pairs, tonumber
+local tsort = table.sort
 
 module (...)
 
@@ -190,6 +191,17 @@ end
 
 -- Choose the mime-type with the highest fitness score and quality ('q')
 -- from a list of candidates.
+local function best_match_comp(a,b)
+	for i = 1,3 do
+		local comp = a[i] - b[i]
+		if comp > 0 then
+			return true
+		elseif comp < 0 then
+			return
+		end
+	end
+end
+
 function best_match(supported, header)
 --[[
 	Takes a list of supported mime-types and finds the best
@@ -203,4 +215,15 @@ function best_match(supported, header)
 	>>> best_match({'application/xbel+xml', 'text/xml'}, 'text/*;q=0.5,*/*; q=0.1')
 	'text/xml'
 	]]--
+	local parsed_header = parse_media_ranges(header)
+	local matches = {}
+
+	for pos, mime_type in ipairs(supported) do
+		local f,q = fitness_and_quality_parsed(mime_type, parsed_header)
+		matches[#matches+1] = {f, q, pos, mime_type}
+	end
+
+	tsort(matches, best_match_comp)
+
+	return (matches[1][2] ~= 0) and matches[1][4] or ""
 end
