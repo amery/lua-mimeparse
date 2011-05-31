@@ -145,6 +145,8 @@ function quality_parsed(mime_type, parsed_ranges)
 	except that 'parsed_ranges' must be a list of
 	parsed media ranges.
 	]]--
+
+	return fitness_and_quality_parsed(mime_type, parsed_ranges)[2]
 end
 
 -- Determines the quality ('q') of a mime-type when compared against a list
