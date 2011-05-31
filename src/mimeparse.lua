@@ -159,6 +159,8 @@ function quality(mime_type, ranges)
 	>>> quality('text/html','text/*;q=0.3, text/html;q=0.7, text/html;level=1, text/html;level=2;q=0.4, */*;q=0.5')
 	0.7
 	]]--
+	local parsed_ranges = parse_media_ranges(ranges)
+	return quality_parsed(mime_type, parsed_ranges)
 end
 
 -- Choose the mime-type with the highest fitness score and quality ('q')
