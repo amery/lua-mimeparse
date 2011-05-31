@@ -56,7 +56,7 @@ local function foldparams(...)
 	return params
 end
 
-local parameters = (P";" * parameter)^0
+local parameters = (spacing * P";" * spacing * parameter)^0
 local media_type = Ct(C(token) * P"/" * C(token) * (parameters/foldparams))
 local media_ranges = media_type * (spacing * P"," * spacing * media_type)^0
 
