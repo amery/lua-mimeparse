@@ -1,4 +1,16 @@
 --
+-- This module provides basic functions for handling mime-types. It can
+-- handle matching mime-types against a list of media-ranges. See section
+-- 14.1 of the HTTP specification [RFC 2616] for a complete explanation.
+--
+--   http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
+--
+-- A port to Lua/Lpeg of Joe Gregorio's MIME-Type Parser:
+--
+--   http://code.google.com/p/mimeparse/
+--
+-- Ported by Alejandro Mery <amery@geeks.cl> from version 0.1.3
+-- Comments are mostly excerpted from the original.
 
 require "lpeg"
 
@@ -58,6 +70,7 @@ local function foldparams(...)
 end
 
 local parameters = (spacing * P";" * spacing * parameter)^0
+-- TODO: support "*" as alias of "*/*" as Joe Gregorio's
 local media_type = Ct(C(token) * P"/" * C(token) * (parameters/foldparams))
 local media_ranges = media_type * (spacing * P"," * spacing * media_type)^0
 
