@@ -91,11 +91,13 @@ function parse_media_range(media_range)
 	in with a proper default if necessary.
 	]]--
 	local r = parse_mime_type(media_range)
-	local q = tonumber(r[3]["q"]) or 1
-	if q < 0 or q > 1 then
-		q = 1
+	if r then
+		local q = tonumber(r[3]["q"]) or 1
+		if q < 0 or q > 1 then
+			q = 1
+		end
+		r[3]["q"] = q
 	end
-	r[3]["q"] = q
 	return r
 end
 
