@@ -131,6 +131,26 @@ function fitness_and_quality_parsed(mime_type, parsed_ranges)
 	local best_fitness = -1
 	local best_fit_q = 0
 
+	local t = parse_media_range(mime_type)
+	if t then
+		for _,r in ipairs(parsed_ranges) do
+			if (r[1] == t[1] or r[1] == "*" or t[1] == "*") and
+			   (r[2] == t[2] or r[2] == "*" or t[2] == "*") then
+
+				local fitness = (r[1] == t[1]) and 100 or 0
+				fitness = fitness + ((r[2] == t[2]) and 10 or 0)
+
+--         param_matches = reduce(lambda x, y: x+y, [1 for (key, value) in \
+--                 target_params.iteritems() if key != 'q' and \
+--                 params.has_key(key) and value == params[key]], 0)
+--         fitness += param_matches
+				if fitness > best_fitness then
+					best_fitness = fitness
+					best_fit_q = r[3]["q"]
+				end
+			end
+		end
+	end
 	return best_fitness, best_fit_q
 end
 
