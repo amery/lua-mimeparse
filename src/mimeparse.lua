@@ -134,7 +134,7 @@ function fitness_and_quality_parsed(mime_type, parsed_ranges)
 	local best_fit_q = 0
 
 	local t = parse_media_range(mime_type)
-	if t then
+	if t and parsed_ranges then
 		for _,r in ipairs(parsed_ranges) do
 			if (r[1] == t[1] or r[1] == "*" or t[1] == "*") and
 			   (r[2] == t[2] or r[2] == "*" or t[2] == "*") then
